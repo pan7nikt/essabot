@@ -85,4 +85,4 @@ client.on('messageCreate', (msg) => {
 });
 
 
-client.login('ODg5NjAxNzQ1Njg3MzA2MzAy.YUjoMA.NnecRaTX3gYHDUK4xkjxDW-gy1A');
+client.login('');
