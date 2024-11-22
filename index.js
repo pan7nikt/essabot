@@ -5,11 +5,29 @@
 global.AbortController = require("abort-controller");
 //to jest tylko chwilowy workaround /\/\/\/\
 
-
+const { Client, GatewayIntentBits } = require('discord.js')
 const Discord = require('discord.js');
 
 //const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES"]});
-const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES","GUILD_MEMBERS","GUILD_BANS","GUILD_EMOJIS_AND_STICKERS","GUILD_INTEGRATIONS","GUILD_WEBHOOKS","GUILD_INVITES","GUILD_PRESENCES","GUILD_MESSAGE_REACTIONS","GUILD_MESSAGE_TYPING","DIRECT_MESSAGES","DIRECT_MESSAGE_REACTIONS","DIRECT_MESSAGE_TYPING"]});
+//const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES","GUILD_MEMBERS","GUILD_BANS","GUILD_EMOJIS_AND_STICKERS","GUILD_INTEGRATIONS","GUILD_WEBHOOKS","GUILD_INVITES","GUILD_PRESENCES","GUILD_MESSAGE_REACTIONS","GUILD_MESSAGE_TYPING","DIRECT_MESSAGES","DIRECT_MESSAGE_REACTIONS","DIRECT_MESSAGE_TYPING"]});
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildModeration,
+        GatewayIntentBits.GuildEmojisAndStickers,
+        GatewayIntentBits.GuildIntegrations,
+        GatewayIntentBits.GuildInvites,
+        GatewayIntentBits.GuildPresences,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.GuildMessageTyping,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.DirectMessageReactions,
+        GatewayIntentBits.DirectMessageTyping,
+    ]});
 
 const prefix = "es";
 
@@ -63,13 +81,16 @@ client.on('messageCreate', (msg) => {
     {
         //Wywołuje zaawansowaną komendę
         client.commands.get('play').execute(msg, args);
+        console.log('received a command: PLAY');
     }
+    
 
     if(command == 'sa')
     {
         //Wywołuje zaawansowaną komendę
         client.commands.get('playold').execute(msg, args);
     }
+
 
     if(command == 'skip')
     {

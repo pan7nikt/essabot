@@ -5,8 +5,11 @@
 
 
 //Testowo zastąpione tą biblioteką: https://github.com/amishshah/ytdl-core-discord
-const ytdl = require('ytdl-core');
+//ytdl-core nie dostalo jeszcze nowej zmiany API od google, wiec zamieniamy na @distube/ytdl-core
+//const ytdl = require('ytdl-core');
+const ytdl = require('@distube/ytdl-core');
 const playdl = require('play-dl');
+const ytdlexec = require('youtube-dl-exec');
 //Do playlist
 //const yetpl = require('ytpl');
 //const ytdl = require('ytdl-core-discord');
@@ -187,11 +190,17 @@ module.exports =
                     isPlaying = true;
                     console.log("odtwarzanie następnego filmu");
                     //Tu ytdl zamienione na playdl
-                    const stream = await playdl.stream(queue[0].url, { discordPlayerCompatibility : true});
-                    //const stream = await ytdl(queue[0].url, {filter: 'audioonly'});
+                    //const stream = await playdl.stream(queue[0].url, { discordPlayerCompatibility : true});
+                    const stream = await ytdl(queue[0].url, {filter: 'audioonly', liveBuffer: 2000, highWaterMark: 1 << 25});
+                    //const stream = await ytdl(queue[0].url, {filter: 'audioonly', quality: 'highestaudio', dlChunkSize: 0, highWaterMark: 1 << 25,});
+                    /*
                     const resource = await createAudioResource(stream, {
                         inputType: stream.type
                     });
+                    */
+                    let resource = createAudioResource(stream.stream, {
+                        inputType: stream.type
+                    })
                     await player.play(resource, {seek: 0, volume: 1})
                     await message.reply(`teraz odtwarzane: ***${queue[0].title}***`);
                 }
@@ -212,11 +221,25 @@ module.exports =
         {
             isPlaying = true;
             console.log("odtwarzanie pierwszego filmu");
-            //const stream = await ytdl(queue[0].url, {filter: 'audioonly'});
-            const stream = await playdl.stream(queue[0].url, { discordPlayerCompatibility : true});
+            //To działało dotychczas:
+            //const stream = await ytdl(queue[0].url, {filter: 'audioonly', quality: 'highestaudio', dlChunkSize: 0, highWaterMark: 1 << 25,});
+            const stream = await ytdl(queue[0].url, {filter: 'audioonly', liveBuffer: 2000, highWaterMark: 1 << 25});
+            //To już nie:
+            //const stream = await playdl.stream(queue[0].url, { discordPlayerCompatibility : true});
+            
             const resource = await createAudioResource(stream, {
-                inputType: StreamType.Arbitrary,
+                inputType: stream.type,
             });
+            
+           /*
+            const stream = ytdlexec(queue[0].url, {
+                o: '-',
+                q: '',
+                f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
+                r: '100K',
+              }, { stdio: ['ignore', 'pipe', 'ignore'] });
+            */
+            //const resource = createAudioResource(stream);
             await player.play(resource, {seek: 0, volume: 1})
             await message.reply(`teraz odtwarzane: ***${queue[0].title}***`);
         }
